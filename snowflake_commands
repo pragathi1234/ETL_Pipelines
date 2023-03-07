@@ -1,0 +1,13 @@
+CREATE OR REPLACE STAGE my_s3_stage
+URL='s3://nyc-datalake/cleaned'
+CREDENTIALS=(AWS_KEY_ID='<access key>' AWS_SECRET_KEY='<secret access key>')
+FILE_FORMAT = (type = 'CSV', field_delimiter = ',');
+
+
+CREATE TABLE nyc_data(vendorid INT, tpep_pickup_datetime varchar, tpep_dropoff_datetime varchar, passenger_count INT, trip_distance FLOAT, ratecodeid INT, store_and_fwd_flag VARCHAR, pulocationid INT, dolocationid INT, payment_type INT, fare_amount FLOAT, extra FLOAT, mta_tax FLOAT, tip_amount FLOAT, tolls_amount FLOAT, improvement_surcharge FLOAT, total_amount FLOAT, congestion_surcharge FLOAT)
+
+COPY INTO nyc_data
+FROM '@my_s3_stage/cleaned_data'
+FILE_FORMAT = (type = 'CSV', field_delimiter = ',', skip_header = 1);
+
+select * from nyc_data
